@@ -88,6 +88,14 @@ app.put('/blog/:id', async (req, res) => {
     res.redirect(`/blog/${blog._id}`);
 })
 
+app.delete('/blog/:id', async (req, res) => {
+    const blog = await Blog.findOne({ _id: req.params.id });
+    let deletedBlog = __dirname + '/public' + blog.backroundImage;
+    fs.unlinkSync(deletedBlog);
+    await Blog.findByIdAndRemove(blog._id);
+    res.redirect('/');
+})
+
 const port = 3000;
 app.listen(port, () => {
     console.log(`Server started on port ${port}...`);

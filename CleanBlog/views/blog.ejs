@@ -74,7 +74,9 @@
 
               <p>Placeholder text by
                 <a href="/blog/edit/<%= blog._id %>">Click</a> to update the blog
-                <a href="#">Click</a> to delete the blog
+                <a href="/blog/<%= blog._id %>?_method=DELETE"
+                  onclick="return confirm('Are You Sure You Want to Delete?')">Click
+                </a> to delete the blog
               </p>
             </div>
           </div>
