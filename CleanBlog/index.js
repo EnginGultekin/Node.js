@@ -4,6 +4,7 @@ import Blog from "./models/Blog.js";
 import mongoose from "mongoose";
 import ejs from "ejs";
 import fs from 'fs';
+import methodOverride from "method-override";
 import fileUpload from "express-fileupload";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -26,6 +27,9 @@ app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true })) // Body parser
 app.use(express.json())
 app.use(fileUpload())
+app.use(methodOverride('_method', {
+    methods: ['POST', 'GET']
+}))
 
 app.get('/', async (req, res) => {
     const blogs = await Blog.find({})
@@ -42,12 +46,16 @@ app.get('/add', (req, res) => {
     res.render('add');
 })
 
+app.get('/add', (req, res) => {
+    res.render('add');
+})
+
 app.get('/blog/:id', async (req, res) => {
     const blog = await Blog.findById(req.params.id)
     res.render('blog', { blog });
 })
 
-app.post('/create_blog', async (req, res) => {
+app.post('/blog', async (req, res) => {
     const uploadDir = 'public/uploads';
     if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir);
@@ -62,6 +70,22 @@ app.post('/create_blog', async (req, res) => {
         })
     });
     res.redirect('/');
+})
+
+app.get('/blog/edit/:id', async (req, res) => {
+    const blog = await Blog.findOne({ _id: req.params.id });
+    res.render('edit', { blog });
+})
+
+app.put('/blog/:id', async (req, res) => {
+    const blog = await Blog.findOne({ _id: req.params.id })
+    blog.author = req.body.author;
+    blog.title = req.body.title;
+    blog.subtitle = req.body.subtitle;
+    blog.detail = req.body.detail;
+
+    blog.save();
+    res.redirect(`/blog/${blog._id}`);
 })
 
 const port = 3000;

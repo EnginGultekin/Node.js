@@ -10,7 +10,7 @@
     <%- include('partials/_navigation.ejs') -%>
 
       <!-- Page Header -->
-      <header class="masthead" style="background-image: url('img/contact-bg.jpg')">
+      <header class="masthead" style="background-image: url('<%= blog.backroundImage%>')">
         <div class="overlay"></div>
         <div class="container">
           <div class="row">
@@ -27,19 +27,19 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-8 col-md-10 mx-auto">
-            <form method="POST" action="/blog" encType="multipart/form-data">
+            <form method="POST" action="/blog/<%= blog._id%>?_method=PUT" encType="multipart/form-data">
 
               <div class="control-group">
                 <div class="form-group floating-label-form-group controls">
                   <label>Post Title</label>
-                  <input name="title" type="text" class="form-control" placeholder="Post Title" required
+                  <input name="title" type="text" value="<%= blog.title%>" class="form-control" placeholder="Post Title" required
                     data-validation-required-message="Please enter post title.">
                 </div>
               </div>
               <div class="control-group mt-2">
                 <div class="form-group floating-label-form-group controls">
                   <label>Post Subtitle</label>
-                  <input name="subtitle" type="text" class="form-control" placeholder="Post Subtitle" required
+                  <input name="subtitle" type="text" class="form-control" value="<%= blog.subtitle%>" placeholder="Post Subtitle" required
                     data-validation-required-message="Please enter post title.">
                 </div>
               </div>
@@ -48,28 +48,20 @@
                 <div class="form-group floating-label-form-group controls">
                   <label>Post Detail</label>
                   <textarea rows="5" name="detail" class="form-control" placeholder="Post Detail" required
-                    data-validation-required-message="Please enter a message."></textarea>
+                    data-validation-required-message="Please enter a message."><%= blog.detail%></textarea>
                 </div>
               </div>
 
               <div class="control-group mt-2">
                 <div class="form-group floating-label-form-group controls">
                   <label>Author Name</label>
-                  <input name="author" type="text" class="form-control" placeholder="Author Name" required
-                    data-validation-required-message="Please enter post title.">
+                  <input name="author" type="text" value="<%= blog.author%>" class="form-control"
+                    placeholder="Author Name" required data-validation-required-message="Please enter post title.">
                 </div>
               </div>
-              <br>
-              <div class="control-group mt-2">
-                <div class="form-group ">
-                  <label for="file" class="bt btn-secondary btn-md px-3 py-2">Select Image</label>
-                  <input id="file" type="file" style="display:none" name="image" class="form-control-file rounded-0"
-                    required />
-                </div>
-              </div>
-
               <div id="success"></div>
-              <button type="submit" class="btn btn-primary d-block ml-auto mr-0 px-5" id="sendMessageButton">Send</button>
+              <button type="submit" class="btn btn-primary px-5 mt-5"
+                id="sendMessageButton">Update</button>
             </form>
           </div>
         </div>
