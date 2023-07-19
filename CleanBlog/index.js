@@ -1,8 +1,15 @@
 import express from "express";
 import dotenv from 'dotenv';
-import ejs from "ejs";
 import Blog from "./models/Blog.js";
 import mongoose from "mongoose";
+import ejs from "ejs";
+import fs from 'fs';
+import fileUpload from "express-fileupload";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 dotenv.config();
@@ -18,6 +25,7 @@ app.set("view engine", "ejs");
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true })) // Body parser
 app.use(express.json())
+app.use(fileUpload())
 
 app.get('/', async (req, res) => {
     const blogs = await Blog.find({})
@@ -40,7 +48,19 @@ app.get('/blog/:id', async (req, res) => {
 })
 
 app.post('/create_blog', async (req, res) => {
-    await Blog.create(req.body);
+    const uploadDir = 'public/uploads';
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir);
+    }
+
+    const uploadImage = req.files.image;
+    const uploadPath = __dirname + '/public/uploads/' + uploadImage.name;
+    uploadImage.mv(uploadPath, async () => {
+        await Blog.create({
+            ...req.body,
+            backroundImage: '/uploads/' + uploadImage.name,
+        })
+    });
     res.redirect('/');
 })
 

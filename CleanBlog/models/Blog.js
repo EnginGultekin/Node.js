@@ -9,7 +9,15 @@ const BlogSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    subtitle: {
+        type: String,
+        require: true,
+    },
     detail: {
+        type: String,
+        require: true,
+    },
+    backroundImage: {
         type: String,
         require: true,
     },

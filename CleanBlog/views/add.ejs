@@ -17,7 +17,6 @@
             <div class="col-lg-8 col-md-10 mx-auto">
               <div class="page-heading">
                 <h1>Add New Post</h1>
-
               </div>
             </div>
           </div>
@@ -28,7 +27,7 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-8 col-md-10 mx-auto">
-            <form method="POST" action="/create_blog">
+            <form method="POST" action="/create_blog" encType="multipart/form-data">
 
               <div class="control-group">
                 <div class="form-group floating-label-form-group controls">
@@ -37,8 +36,15 @@
                     data-validation-required-message="Please enter post title.">
                 </div>
               </div>
+              <div class="control-group mt-2">
+                <div class="form-group floating-label-form-group controls">
+                  <label>Post Subtitle</label>
+                  <input name="subtitle" type="text" class="form-control" placeholder="Post Subtitle" required
+                    data-validation-required-message="Please enter post title.">
+                </div>
+              </div>
 
-              <div class="control-group mt-1">
+              <div class="control-group mt-2">
                 <div class="form-group floating-label-form-group controls">
                   <label>Post Detail</label>
                   <textarea rows="5" name="detail" class="form-control" placeholder="Post Detail" required
@@ -46,17 +52,24 @@
                 </div>
               </div>
 
-              <div class="control-group mt-1">
+              <div class="control-group mt-2">
                 <div class="form-group floating-label-form-group controls">
                   <label>Author Name</label>
                   <input name="author" type="text" class="form-control" placeholder="Author Name" required
                     data-validation-required-message="Please enter post title.">
                 </div>
               </div>
-
               <br>
+              <div class="control-group mt-2">
+                <div class="form-group ">
+                  <label for="file" class="bt btn-secondary btn-md px-3 py-2">Select Image</label>
+                  <input id="file" type="file" style="display:none" name="image" class="form-control-file rounded-0"
+                    required />
+                </div>
+              </div>
+
               <div id="success"></div>
-              <button type="submit" class="btn btn-primary" id="sendMessageButton">Send</button>
+              <button type="submit" class="btn btn-primary d-block ml-auto mr-0 px-5" id="sendMessageButton">Send</button>
             </form>
           </div>
         </div>
