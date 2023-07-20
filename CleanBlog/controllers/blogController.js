@@ -24,12 +24,13 @@ const createBlog = async (req, res) => {
         fs.mkdirSync(uploadDir);
     }
 
+    const now = Date.now();
     const uploadImage = req.files.image;
-    const uploadPath = __dirname + '/../public/uploads/' + uploadImage.name;
+    const uploadPath = __dirname + '/../public/uploads/' + now + '-' + uploadImage.name;
     uploadImage.mv(uploadPath, async () => {
         await Blog.create({
             ...req.body,
-            backroundImage: '/uploads/' + uploadImage.name,
+            backroundImage: '/uploads/' + now + '-' + uploadImage.name,
         })
     });
     res.redirect('/');
@@ -42,7 +43,7 @@ const updateBlog = async (req, res) => {
     blog.subtitle = req.body.subtitle;
     blog.detail = req.body.detail;
 
-    blog.save();
+    await blog.save();
     res.redirect(`/blog/${blog._id}`);
 }
 
