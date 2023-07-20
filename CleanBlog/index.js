@@ -1,23 +1,14 @@
 import express from "express";
 import dotenv from 'dotenv';
-import Blog from "./models/Blog.js";
 import mongoose from "mongoose";
 import ejs from "ejs";
-import fs from 'fs';
 import methodOverride from "method-override";
 import fileUpload from "express-fileupload";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import blogController from "./controllers/blogController.js";
+import pageController from "./controllers/pageController.js";
 
 const app = express();
 dotenv.config();
-
-mongoose.connect(process.env.DB_CONNECTION_STRING)
-    .then(() => console.log('Connnected DB'))
-    .catch((error) => console.log(error));
 
 //Template Engine
 app.set("view engine", "ejs");
@@ -31,72 +22,20 @@ app.use(methodOverride('_method', {
     methods: ['POST', 'GET']
 }))
 
-app.get('/', async (req, res) => {
-    const blogs = await Blog.find({})
-    res.render('index', {
-        blogs,
-    });
-})
+app.get('/', blogController.getAllBlogs);
+app.get('/blog/:id', blogController.getBlog);
+app.post('/blog', blogController.createBlog);
+app.put('/blog/:id', blogController.updateBlog);
+app.delete('/blog/:id', blogController.deleteBlog);
 
-app.get('/about', (req, res) => {
-    res.render('about');
-})
-
-app.get('/add', (req, res) => {
-    res.render('add');
-})
-
-app.get('/add', (req, res) => {
-    res.render('add');
-})
-
-app.get('/blog/:id', async (req, res) => {
-    const blog = await Blog.findById(req.params.id)
-    res.render('blog', { blog });
-})
-
-app.post('/blog', async (req, res) => {
-    const uploadDir = 'public/uploads';
-    if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir);
-    }
-
-    const uploadImage = req.files.image;
-    const uploadPath = __dirname + '/public/uploads/' + uploadImage.name;
-    uploadImage.mv(uploadPath, async () => {
-        await Blog.create({
-            ...req.body,
-            backroundImage: '/uploads/' + uploadImage.name,
-        })
-    });
-    res.redirect('/');
-})
-
-app.get('/blog/edit/:id', async (req, res) => {
-    const blog = await Blog.findOne({ _id: req.params.id });
-    res.render('edit', { blog });
-})
-
-app.put('/blog/:id', async (req, res) => {
-    const blog = await Blog.findOne({ _id: req.params.id })
-    blog.author = req.body.author;
-    blog.title = req.body.title;
-    blog.subtitle = req.body.subtitle;
-    blog.detail = req.body.detail;
-
-    blog.save();
-    res.redirect(`/blog/${blog._id}`);
-})
-
-app.delete('/blog/:id', async (req, res) => {
-    const blog = await Blog.findOne({ _id: req.params.id });
-    let deletedBlog = __dirname + '/public' + blog.backroundImage;
-    fs.unlinkSync(deletedBlog);
-    await Blog.findByIdAndRemove(blog._id);
-    res.redirect('/');
-})
+app.get('/about', pageController.getAboutPage);
+app.get('/add', pageController.getAddPage);
+app.get('/blog/edit/:id', pageController.getEditPage);
 
 const port = 3000;
 app.listen(port, () => {
-    console.log(`Server started on port ${port}...`);
+    //console.log(`Server started on port ${port}...`);
+    mongoose.connect(process.env.DB_CONNECTION_STRING)
+        .then(() => console.log('Connnected DB'))
+        .catch((error) => console.log(error));
 })
