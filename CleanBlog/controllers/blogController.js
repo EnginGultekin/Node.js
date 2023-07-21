@@ -6,10 +6,24 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const getAllBlogs = async (_, res) => {
-    const blogs = await Blog.find({})
+const getAllBlogs = async (req, res) => {
+
+    // Our start page or first page.
+    const page = req.query.page || 1;
+    // Number of photos on each page
+    const blogPerPage = 4;
+    // Total number of photos
+    const totalBlog = await Blog.find().countDocuments();
+
+    const blogs = await Blog.find({})   // We get all the blogs
+        .sort('-dateCreated')    // We sort the blogs
+        .skip((page - 1) * blogPerPage)     // Allows Discarding Used by Pages 
+        .limit(blogPerPage)     // We limit the number of Blogs I want on each page.
+
     res.render('index', {
-        blogs,
+        blogs: blogs,   // Photos we limit by page
+        current: page,  // The highlighted page
+        pages: Math.ceil(totalBlog / blogPerPage), // Total number of pages
     });
 }
 

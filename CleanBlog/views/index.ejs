@@ -69,10 +69,20 @@
               <hr>
               <% } %>
 
-                <!-- Pager -->
-                <div class="clearfix">
-                  <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+              <!-- Pages -->
+              <% if(pages > 0) {%>
+                <div class="clearfix my-4">
+                <% for(let i = 1; i <= pages; i++){ %>
+                  <% if(i == current) { %>
+                    <a class="btn btn-primary float-left active mr-1" href="/?page=<%= i %>"><%= i %></a>
+                  <% }  else if(i < pages) { %>
+                    <a class="btn btn-primary float-left mr-1" href="/?page=<%= i %>"><%= i %></a>
+                  <% } else {%>
+                    <a class="btn btn-primary float-left" href="/?page=<%= i %>">></a>
+                  <% } %>  
+                <% } %>
                 </div>
+              <% } %>
           </div>
         </div>
       </div>
