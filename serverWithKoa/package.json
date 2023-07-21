@@ -1,0 +1,15 @@
+{
+  "name": "serverwithkoa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Engin",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.14.2"
+  }
+}
