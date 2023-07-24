@@ -1,0 +1,15 @@
+{
+    "name": "file",
+    "version": "1.0.0",
+    "description": "File System Module",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+      "start": "nodemon index.js"
+    },
+    "author": "engin gultekin",
+    "license": "ISC",
+    "dependencies": {
+    }
+  }
+  
