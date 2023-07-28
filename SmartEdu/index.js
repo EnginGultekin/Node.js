@@ -1,4 +1,5 @@
 import express from 'express';
+import pageRouter from './routers/pageRouter.js';
 
 const app = express();
 
@@ -8,17 +9,8 @@ app.set('view engine', 'ejs');
 // Middlewares
 app.use(express.static('public'));
 
-app.get('/', (req, res) => {
-    res.status(200).render('index', {
-        page_name: "index"
-    });
-});
-
-app.get('/about', (req, res) => {
-    res.status(200).render('about', {
-        page_name: "about"
-    });
-});
+//Routers
+app.use('/', pageRouter);
 
 const port = 3000;
 app.listen(port, () => {
