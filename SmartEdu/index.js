@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import pageRouter from './routers/pageRouter.js';
-import courseRouter from './routers/courseRouter.js';
+import coursesRouter from './routers/courseRouter.js';
 
 const app = express();
 dotenv.config();
@@ -12,10 +12,12 @@ app.set('view engine', 'ejs');
 
 // Middlewares
 app.use(express.static('public'));
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 //Routers
 app.use('/', pageRouter);
-app.use('/courses', courseRouter);
+app.use('/courses', coursesRouter);
 
 const port = 3000;
 app.listen(port, () => {
