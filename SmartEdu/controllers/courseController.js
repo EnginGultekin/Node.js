@@ -9,6 +9,7 @@ const createCourse = asynchandler(async (req, res) => {
             course,
         });
     } catch (error) {
+        console.log("Error: ", error)
         res.status(400).json({
             status: 'fail',
             error,
@@ -24,6 +25,21 @@ const getAllCourses = asynchandler(async (req, res) => {
             page_name: 'courses',
         });
     } catch (error) {
+        res.status(400).json({ 
+            status: 'fail',
+            error,
+        });
+    }
+});
+
+const getCourse = asynchandler(async (req, res) => {
+    try {
+        const course = await Course.findOne({ slug: req.params.slug })
+        res.status(200).render('course', {
+            course,
+            page_name: 'courses',
+        });
+    } catch (error) {
         res.status(400).json({
             status: 'fail',
             error,
@@ -34,4 +50,5 @@ const getAllCourses = asynchandler(async (req, res) => {
 export default {
     createCourse,
     getAllCourses,
+    getCourse,
 };

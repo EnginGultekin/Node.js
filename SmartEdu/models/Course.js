@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
+import slugify from 'slugify';
 
 const CourseSchema = new mongoose.Schema({
     name: {
-        type: String,
+        type: String, 
         unique: true,
         require: true,
     },
@@ -15,6 +16,19 @@ const CourseSchema = new mongoose.Schema({
         type: Date,
         default: Date.now(),
     },
+    slug: {
+        type: String,
+        unique: true,
+    },
+});
+
+// We created slug for course ids
+CourseSchema.pre('validate', function (next) {
+    this.slug = slugify(this.name, {
+        lower: true,
+        strict: true,
+    });
+    next();
 });
 
 export default mongoose.model('Course', CourseSchema);
