@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import pageRouter from './routers/pageRouter.js';
 import coursesRouter from './routers/courseRouter.js';
+import categoryRouter from './routers/categoryRouter.js'
 
 const app = express();
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 //Routers
 app.use('/', pageRouter);
 app.use('/courses', coursesRouter);
+app.use('/categories', categoryRouter);
 
 const port = 3000;
 app.listen(port, () => {
