@@ -10,7 +10,6 @@ const createCourse = asynchandler(async (req, res) => {
             course,
         });
     } catch (error) {
-        console.log("Error: ", error)
         res.status(400).json({
             status: 'fail',
             error,

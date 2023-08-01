@@ -10,7 +10,14 @@ const getAboutPage = (req, res) => {
     });
 };
 
+const getRegisterPage = (req, res) => {
+    res.status(200).render('register', {
+        page_name: 'register',
+    });
+};
+
 export default {
     getIndexPage,
     getAboutPage,
+    getRegisterPage,
 }
