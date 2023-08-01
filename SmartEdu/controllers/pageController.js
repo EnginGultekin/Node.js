@@ -16,8 +16,15 @@ const getRegisterPage = (req, res) => {
     });
 };
 
+const getLoginPage = (req, res) => {
+    res.status(200).render('login', {
+        page_name: 'login',
+    });
+};
+
 export default {
     getIndexPage,
     getAboutPage,
     getRegisterPage,
+    getLoginPage,
 }
