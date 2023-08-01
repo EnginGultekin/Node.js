@@ -20,7 +20,7 @@ const createUser = asynchandler(async (req, res) => {
 const loginUser = asynchandler(async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email })
+        const user = await User.findOne({ email });
 
         if (user) {
             bcrypt.compare(password, user.password, (err, same) => {
@@ -29,10 +29,10 @@ const loginUser = asynchandler(async (req, res) => {
                     req.session.userID = user._id;
                     res.status(200).redirect('/');
                 }
-            })
+            });
         }
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(400).json({
             status: 'fail',
             error,
@@ -40,7 +40,14 @@ const loginUser = asynchandler(async (req, res) => {
     }
 });
 
+const logoutUser = (req, res) => {
+    req.session.destroy(() => {
+        res.redirect('/');
+    });
+};
+
 export default {
     createUser,
     loginUser,
+    logoutUser,
 };

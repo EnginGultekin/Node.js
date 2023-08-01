@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import pageRouter from './routers/pageRouter.js';
 import coursesRouter from './routers/courseRouter.js';
 import categoryRouter from './routers/categoryRouter.js';
@@ -27,6 +28,7 @@ app.use(session({
     saveUninitialized: true,
     // Not needed in our version
     // cookie: { secure: true }  
+    store: MongoStore.create({ mongoUrl: process.env.DB_CONNECTION_STRING })
 }))
 
 //Routers
