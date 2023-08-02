@@ -1,6 +1,7 @@
 import asynchandler from 'express-async-handler';
 import bcrypt from 'bcrypt';
 import User from '../models/User.js';
+import Category from '../models/Category.js'
 
 const createUser = asynchandler(async (req, res) => {
     try {
@@ -47,9 +48,11 @@ const logoutUser = (req, res) => {
 // kullanıcı rollerine göre şekilleneceği için buırda tanımlı
 const getDashboardPage = asynchandler(async (req, res) => {
     const user = await User.findOne({ _id: req.session.userID })
+    const categories = await Category.find();
     res.status(200).render('dashboard', {
         page_name: 'dashboard',
         user,
+        categories,
     });
 });
 
