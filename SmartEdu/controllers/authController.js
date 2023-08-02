@@ -2,6 +2,7 @@ import asynchandler from 'express-async-handler';
 import bcrypt from 'bcrypt';
 import User from '../models/User.js';
 import Category from '../models/Category.js'
+import Course from '../models/Course.js';
 
 const createUser = asynchandler(async (req, res) => {
     try {
@@ -49,10 +50,12 @@ const logoutUser = (req, res) => {
 const getDashboardPage = asynchandler(async (req, res) => {
     const user = await User.findOne({ _id: req.session.userID })
     const categories = await Category.find();
+    const courses = await Course.find({ user: req.session.userID })
     res.status(200).render('dashboard', {
         page_name: 'dashboard',
         user,
         categories,
+        courses,
     });
 });
 

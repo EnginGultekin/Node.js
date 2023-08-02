@@ -2,10 +2,10 @@ import express from "express";
 import courseController from '../controllers/courseController.js';
 import roleMiddleware from '../middlewares/roleMiddleware.js';
 
-const router = express.Router(); 
+const router = express.Router();
 
 // http://localhost:3000/courses/
-router.route('/').post(roleMiddleware(['Teacher', 'Admin']), courseController.createCourse);
+router.route('/').post(roleMiddleware(['teacher', 'admin']), courseController.createCourse);
 router.route('/').get(courseController.getAllCourses);
 router.route('/:slug').get(courseController.getCourse);
 
