@@ -20,6 +20,10 @@ const UserSchema = new mongoose.Schema({
         enum: ["student", 'teacher', 'admin'],
         default: 'student',
     },
+    courses: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course',
+    }]
 });
 
 UserSchema.pre('validate', function (next) {

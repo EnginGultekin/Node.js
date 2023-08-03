@@ -1,5 +1,6 @@
 import asynchandler from 'express-async-handler';
 import Course from '../models/Course.js';
+import User from '../models/User.js'
 import Category from '../models/Category.js'
 
 const createCourse = asynchandler(async (req, res) => {
@@ -30,6 +31,7 @@ const getAllCourses = asynchandler(async (req, res) => {
             filter = { category: category._id }
         }
 
+        // sort('-createdAt') fonsyonu en güncel olandan eskiye doğru sıralar
         const courses = await Course.find(filter).sort('-createdAt');
         const categories = await Category.find();
         res.status(200).render('courses', {
@@ -47,6 +49,8 @@ const getAllCourses = asynchandler(async (req, res) => {
 
 const getCourse = asynchandler(async (req, res) => {
     try {
+        // populate('user') fonksyonu içinde bulundurduğu user id'sini 
+        // kullanarak o kullanıcının tüm özeliiklerini almaya yarıyor. 
         const course = await Course.findOne({ slug: req.params.slug }).populate('user')
         res.status(200).render('course', {
             course,
@@ -60,8 +64,25 @@ const getCourse = asynchandler(async (req, res) => {
     }
 });
 
+const enrollCourse = asynchandler(async (req, res) => {
+    try {
+        const user = await User.findById(req.session.userID);
+        console.log(req.body)
+        await user.courses.push({ _id: req.body.course_id });
+        await user.save();
+
+        res.status(200).redirect('/users/dashboard');
+    } catch (error) {
+        res.status(400).json({
+            status: 'fail',
+            error,
+        });
+    }
+});
+
 export default {
     createCourse,
     getAllCourses,
     getCourse,
+    enrollCourse,
 };
