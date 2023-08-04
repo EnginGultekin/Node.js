@@ -1,7 +1,8 @@
 import asynchandler from 'express-async-handler';
 import Course from '../models/Course.js';
-import User from '../models/User.js'
-import Category from '../models/Category.js'
+import User from '../models/User.js';
+import Category from '../models/Category.js';
+import { query } from 'express';
 
 const createCourse = asynchandler(async (req, res) => {
     try {
@@ -9,9 +10,9 @@ const createCourse = asynchandler(async (req, res) => {
             name: req.body.name,
             description: req.body.description,
             category: req.body.category,
-            user: req.session.userID
+            user: req.session.userID,
         });
-        res.status(201).redirect('/courses')
+        res.status(201).redirect('/courses');
     } catch (error) {
         res.status(400).json({
             status: 'fail',
@@ -22,17 +23,33 @@ const createCourse = asynchandler(async (req, res) => {
 
 const getAllCourses = asynchandler(async (req, res) => {
     try {
-
         const categorySlug = req.query.categories;
+        const query = req.query.search;
         const category = await Category.findOne({ slug: categorySlug });
         let filter = {};
 
         if (categorySlug) {
-            filter = { category: category._id }
+            filter = { category: category._id };
+        }
+
+        if (query) {
+            filter = { name: query };
+        }
+
+        if (!query && !categorySlug) {
+            filter.name = '';
+            filter.category = null;
         }
 
         // sort('-createdAt') fonsyonu en güncel olandan eskiye doğru sıralar
-        const courses = await Course.find(filter).sort('-createdAt').populate('user');
+        const courses = await Course.find({
+            $or: [
+                { name: { $regex: '.*' + filter.name + '.*', $options: 'i' } },
+                { category: filter.category }
+            ]
+        })
+            .sort('-createdAt')
+            .populate('user');
         const categories = await Category.find();
         res.status(200).render('courses', {
             courses,
@@ -49,14 +66,18 @@ const getAllCourses = asynchandler(async (req, res) => {
 
 const getCourse = asynchandler(async (req, res) => {
     try {
-        // populate('user') fonksyonu içinde bulundurduğu user id'sini 
-        // kullanarak o kullanıcının tüm özeliiklerini almaya yarıyor. 
+        // populate('user') fonksyonu içinde bulundurduğu user id'sini
+        // kullanarak o kullanıcının tüm özeliiklerini almaya yarıyor.
         const user = await User.findById(req.session.userID);
-        const course = await Course.findOne({ slug: req.params.slug }).populate('user')
+        const course = await Course.findOne({ slug: req.params.slug }).populate(
+            'user'
+        );
+        const categories = await Category.find();
         res.status(200).render('course', {
             course,
             page_name: 'courses',
             user,
+            categories,
         });
     } catch (error) {
         res.status(400).json({
@@ -80,7 +101,6 @@ const enrollCourse = asynchandler(async (req, res) => {
         });
     }
 });
-
 
 const releaseCourse = asynchandler(async (req, res) => {
     try {
