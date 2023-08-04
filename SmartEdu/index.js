@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
+import flash from 'connect-flash';
 import pageRouter from './routers/pageRouter.js';
 import coursesRouter from './routers/courseRouter.js';
 import categoryRouter from './routers/categoryRouter.js';
@@ -30,6 +31,12 @@ app.use(session({
     // cookie: { secure: true }  
     store: MongoStore.create({ mongoUrl: process.env.DB_CONNECTION_STRING })
 }))
+app.use(flash());
+app.use((req, res, next) => {
+    res.locals.flashMessage = req.flash();
+    next();
+})
+
 
 //Routers
 app.use('*', (req, res, next) => {

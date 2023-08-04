@@ -32,42 +32,46 @@ const getContactPage = (req, res) => {
 };
 
 const sendEmail = async (req, res) => {
-    
-    // const outputMessage = `
-    // <h1> Message Detail </h1>
-    // <ul>
-    //     <li>Name: ${req.body.name} </li>
-    //     <li>Email: ${req.body.email} </li>
-    // <ul>
-    // <h1> Message </h1>
-    // <p>${req.body.message}</p>
-    // `
 
-    // const transporter = nodemailer.createTransport({
-    //     host: "smtp.gmail.com",
-    //     port: 465,
-    //     secure: true,
-    //     auth: {
-    //         // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-    //         user: 'examplemail@gmail.com', // gmail account
-    //         pass: 'password'  // gmail password
-    //     }
-    // });
+    try {
+        const outputMessage = `
+        <h1> Message Detail </h1>
+        <ul>
+            <li>Name: ${req.body.name} </li>
+            <li>Email: ${req.body.email} </li>
+        <ul>
+        <h1> Message </h1>
+        <p>${req.body.message}</p>
+        `
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            auth: {
+                // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+                user: 'examplemail@gmail.com', // gmail account
+                pass: 'password'  // gmail password
+            }
+        });
 
-    // // send mail with defined transport object
-    // const info = await transporter.sendMail({
-    //     from: '"Smart EDU Contact Form 👻" <examplesender@gmail.com>', // sender address
-    //     to: "exampleto@gmail.com", // list of receivers
-    //     subject: "Smart EDU Contact Form New Message ✔", // Subject line
-    //     html: outputMessage, // html body
-    // });
+        // send mail with defined transport object
+        const info = await transporter.sendMail({
+            from: '"Smart EDU Contact Form 👻" <examplesender@gmail.com>', // sender address
+            to: "exampleto@gmail.com", // list of receivers
+            subject: "Smart EDU Contact Form New Message ✔", // Subject line
+            html: outputMessage, // html body
+        });
 
-    // console.log("Message sent: %s", info.messageId);
-    // // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        console.log("Message sent: %s", info.messageId);
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
-    res.status(200).redirect('/contact')
+        req.flash("success", "We Received your message succesfully")
+        res.status(200).redirect('/contact')
+    } catch (err) {
+        req.flash("error", `Something happened: ERROR!`)
+        res.status(400).redirect('/contact')
+    }
 };
-
 
 export default {
     getIndexPage,
