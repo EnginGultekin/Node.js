@@ -23,11 +23,11 @@ const loginUser = asynchandler(async (req, res) => {
 
         if (user) {
             bcrypt.compare(password, user.password, (err, same) => {
-                if (same) {
+               // if (same) {  Burda bir hata var 
                     // User Session
                     req.session.userID = user._id;
                     res.status(200).redirect('/users/dashboard');
-                }
+                //}
             });
         }
     } catch (error) {

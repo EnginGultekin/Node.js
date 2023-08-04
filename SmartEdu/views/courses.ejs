@@ -29,13 +29,15 @@
 											</div>
 											<div class="course-desc">
 												<p>
-													<%= courses[i].description %>
+													<%= courses[i].description.substring(0, 120) + "..." %>
 												</p>
 											</div>
 										</div>
 										<div class="course-meta-bot">
 											<ul>
-												<li><i class="fa fa-user" aria-hidden="true"></i>Teacher Name</li>
+												<li><i class="fa fa-user" aria-hidden="true"></i>
+													<%= courses[i].user.name %>
+												</li>
 											</ul>
 										</div>
 									</div>
@@ -65,7 +67,7 @@
 											<%= categories[i].name %>
 										</a>
 									</li>
-									<% } %> 
+									<% } %>
 							</ul>
 						</div>
 					</div>
