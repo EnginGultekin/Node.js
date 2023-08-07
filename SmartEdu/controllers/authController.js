@@ -1,5 +1,6 @@
 import asynchandler from 'express-async-handler';
 import bcrypt from 'bcrypt';
+import { validationResult } from 'express-validator';
 import User from '../models/User.js';
 import Category from '../models/Category.js'
 import Course from '../models/Course.js';
@@ -9,10 +10,12 @@ const createUser = asynchandler(async (req, res) => {
         const user = await User.create(req.body);
         res.status(201).redirect('/login');
     } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            error,
-        });
+        const errors = validationResult(req);
+
+        for (let i = 0; i < errors.array().length; i++) {
+            req.flash("error", `${errors.array()[i].msg}`);
+        }
+        res.status(400).redirect('/register');
     }
 });
 
@@ -23,12 +26,17 @@ const loginUser = asynchandler(async (req, res) => {
 
         if (user) {
             bcrypt.compare(password, user.password, (err, same) => {
-               // if (same) {  Burda bir hata var 
-                    // User Session
+                if (same) {
                     req.session.userID = user._id;
                     res.status(200).redirect('/users/dashboard');
-                //}
+                } else {
+                    req.flash("error", "Your password is not correct!");
+                    res.status(400).redirect('/login');
+                }
             });
+        } else {
+            req.flash("error", "User is not exist!");
+            res.status(400).redirect('/login');
         }
     } catch (error) {
         console.log(error);
