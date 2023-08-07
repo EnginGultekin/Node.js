@@ -12,10 +12,10 @@ const createCourse = asynchandler(async (req, res) => {
             category: req.body.category,
             user: req.session.userID,
         });
-        req.flash("success", `${course.name} has been created successfully`)
+        req.flash("success", `${course.name} has been created successfully`);
         res.status(201).redirect('/courses');
     } catch (error) {
-        req.flash("error", `Something happend: ERROR!`)
+        req.flash("error", `Something happend: ERROR!`);
         res.status(400).redirect('/courses');
     }
 });
@@ -44,8 +44,8 @@ const getAllCourses = asynchandler(async (req, res) => {
         const courses = await Course.find({
             $or: [
                 { name: { $regex: '.*' + filter.name + '.*', $options: 'i' } },
-                { category: filter.category }
-            ]
+                { category: filter.category },
+            ],
         })
             .sort('-createdAt')
             .populate('user');
@@ -118,8 +118,10 @@ const releaseCourse = asynchandler(async (req, res) => {
 
 const deleteCourse = asynchandler(async (req, res) => {
     try {
-        const course = await Course.findOneAndRemove({ slug: req.params.slug })
-        req.flash("success", `${course.name} has been removed successfully`)
+        console.log("----------------");
+        const course = await Course.findOneAndRemove({ slug: req.params.slug });
+        console.log(course);
+        req.flash("success", `${course.name} has been removed successfully`);
         res.status(200).redirect('/users/dashboard');
     } catch (error) {
         res.status(400).json({
@@ -129,6 +131,25 @@ const deleteCourse = asynchandler(async (req, res) => {
     }
 });
 
+const updateCourse = asynchandler(async (req, res) => {
+    try {
+        const course = await Course.findOne({ slug: req.params.slug });
+
+        course.name = req.body.name;
+        course.description = req.body.description;
+        course.category = req.body.category;
+
+        course.save();
+
+        req.flash("success", `${course.name} has been updated successfully`);
+        res.status(200).redirect('/users/dashboard');
+    } catch (error) {
+        res.status(400).json({
+            status: 'fail',
+            error,
+        });
+    }
+});
 
 export default {
     createCourse,
@@ -137,4 +158,5 @@ export default {
     enrollCourse,
     releaseCourse,
     deleteCourse,
+    updateCourse,
 };
