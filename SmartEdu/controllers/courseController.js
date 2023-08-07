@@ -116,10 +116,25 @@ const releaseCourse = asynchandler(async (req, res) => {
     }
 });
 
+const deleteCourse = asynchandler(async (req, res) => {
+    try {
+        const course = await Course.findOneAndRemove({ slug: req.params.slug })
+        req.flash("success", `${course.name} has been removed successfully`)
+        res.status(200).redirect('/users/dashboard');
+    } catch (error) {
+        res.status(400).json({
+            status: 'fail',
+            error,
+        });
+    }
+});
+
+
 export default {
     createCourse,
     getAllCourses,
     getCourse,
     enrollCourse,
     releaseCourse,
+    deleteCourse,
 };

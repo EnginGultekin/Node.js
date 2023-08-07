@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import flash from 'connect-flash';
+import methodOverride from 'method-override';
 import pageRouter from './routers/pageRouter.js';
 import coursesRouter from './routers/courseRouter.js';
 import categoryRouter from './routers/categoryRouter.js';
@@ -36,6 +37,10 @@ app.use((req, res, next) => {
     res.locals.flashMessage = req.flash();
     next();
 })
+app.use(methodOverride('_method', {
+    methods: ['POST', 'GET'],
+})
+);
 
 
 //Routers

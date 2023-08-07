@@ -76,7 +76,7 @@
 				</div><!-- end section -->
 				<% } %>
 
-					<% if(user.role === 'teacher' ) { %>
+					<% if(user.role==='teacher' ) { %>
 						<div class="all-title-box">
 							<div class="container text-center">
 								<h1>
@@ -89,15 +89,13 @@
 						<div id="overviews" class="section wb">
 							<div class="container">
 								<div class="row">
-
 									<!-- Modal Button -->
-									<div class="col-lg-12 text-center ">
+									<div class="col-lg-12 text-center">
 										<button class="btn btn-lg btn-warning rounded-0 text-white" href="#"
 											data-toggle="modal" data-target="#addCourse">
 											<span>CREATE NEW COURSE</span>
 										</button>
 									</div>
-
 									<div class="col-lg-12 blog-post-single">
 										<div class="blog-author">
 											<div class="author-bio">
@@ -121,6 +119,19 @@
 										</div>
 
 									</div><!-- end col -->
+									<div class="col-lg-12 mt-4">
+										<% if(flashMessage) { %>
+											<% if(flashMessage.success) { %>
+												<div class="alert alert-success">
+												<%= flashMessage.success %>
+												</div>
+											<% } else if (flashMessage.error) { %>
+												<div class="alert alert-danger">
+												<%= flashMessage.error %>
+												</div>
+											<% } %>
+										<% } %>
+									</div>
 								</div><!-- end row -->
 								<div class="row mt-5">
 									<% for (let i=0; i < courses.length; i++) { %>
@@ -139,6 +150,20 @@
 														<p>
 															<%= courses[i].description.substring(0, 120) + "..." %>
 														</p>
+													</div>
+													<div class="clearfix">
+														<div
+															style="list-style-type: none; float: right; margin-bottom: -4px;">
+															<a class="btn btn-info rounded-0 text-white"
+																href="/courses/<%= courses[i].slug %>/?_method=PUT">
+																<span>UPDATE</span>
+															</a>
+															<a class="btn btn-secondary rounded-0 text-white"
+																onclick="return confirm('Are You Sure')"
+																href="/courses/<%= courses[i].slug %>/?_method=DELETE">
+																<span>DELETE</span>
+															</a>
+														</div>
 													</div>
 												</div>
 											</div>

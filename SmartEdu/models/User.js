@@ -26,8 +26,13 @@ const UserSchema = new mongoose.Schema({
     }]
 });
 
+
 UserSchema.pre('validate', function (next) {
     const user = this;
+    // NOTE: Şifre hashleme işlemini burda yapınca mongoose paketi şifreyi
+    // değiştirebiliyor o yüzden fonksyonu ` isModified ` fonksyonu ile yazdık.
+    if (!user.isModified('password')) return next();
+
     bcrypt.hash(user.password, 10, (error, hash) => {
         user.password = hash;
         next();
