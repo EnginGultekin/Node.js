@@ -57,14 +57,31 @@ const logoutUser = (req, res) => {
 // kullanıcı rollerine göre şekilleneceği için buırda tanımlı
 const getDashboardPage = asynchandler(async (req, res) => {
     const user = await User.findOne({ _id: req.session.userID }).populate('courses')
+    const users = await User.find();
     const categories = await Category.find();
     const courses = await Course.find({ user: req.session.userID }).sort('-createdAt')
     res.status(200).render('dashboard', {
         page_name: 'dashboard',
         user,
+        users,
         categories,
         courses,
     });
+});
+
+const deleteUser = asynchandler(async (req, res) => {
+    try {
+        const user = await User.findByIdAndRemove(req.params.id);
+        await Course.deleteMany({ user: req.params.id })
+
+        req.flash("success", `${user.name} has been removed successfully`);
+        res.status(200).redirect('/users/dashboard');
+    } catch (error) {
+        res.status(400).json({
+            status: 'fail',
+            error,
+        });
+    }
 });
 
 export default {
@@ -72,4 +89,5 @@ export default {
     loginUser,
     logoutUser,
     getDashboardPage,
+    deleteUser,
 };

@@ -118,7 +118,6 @@ const releaseCourse = asynchandler(async (req, res) => {
 
 const deleteCourse = asynchandler(async (req, res) => {
     try {
-        console.log("----------------");
         const course = await Course.findOneAndRemove({ slug: req.params.slug });
         console.log(course);
         req.flash("success", `${course.name} has been removed successfully`);
